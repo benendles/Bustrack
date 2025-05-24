@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Info</title>
+</head>
+<body>
+    <h1>{{ person.name }}</h1>
+    <p>Amount: {{ person.amount }}</p>
+    <img src="{{ person.picture.url }}" alt="User Picture" width="200">
+
+    <form action="{% url 'show_qr' person.pk %}" method="get">
+        <button type="submit">View QR Code</button>
+    </form>
+    <!-- Or as a link:
+    <a href="{% url 'show_qr' person.pk %}">View QR Code</a>
+    -->
+</body>
+</html>

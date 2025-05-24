@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>QR Code</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        img {
+            margin-top: 20px;
+        }
+    </style>
+</head> 
+<body>
+    {% if person.qr_code %}
+        <h2>QR Code (scan to view this page):</h2>
+        <img src="{{ person.qr_code.url }}" alt="QR Code">
+    {% endif %} 
+</body>
+</html>

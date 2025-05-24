@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Driver Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 80vh;
+            width: 100%;
+            max-width: 900px;
+            margin: 40px auto;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        }
+        body {
+            background: #f4f6f8;
+            font-family: Arial, sans-serif;
+        }
+        h2 {
+            text-align: center;
+            margin-top: 30px;
+            color: #2a3cff;
+        }
+    </style>
+</head>
+<body>
+    <h2>Welcome, Driver!</h2>
+    <div id="map"></div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        var map = L.map('map').setView([0, 0], 2);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        var markers = {};
+
+        // Show driver's own location as a marker
+        navigator.geolocation.watchPosition(function(position) {
+            var lat = position.coords.latitude;
+            var lng = position.coords.longitude;
+
+            map.setView([lat, lng], 16);
+
+            // Show driver's own marker (key: 'me')
+            if (markers['me']) {
+                markers['me'].setLatLng([lat, lng]);
+            } else {
+                markers['me'] = L.marker([lat, lng], {
+                    icon: L.icon({
+                        iconUrl: '/static/icons/driver_icon.png',
+                        iconSize: [32, 32]
+                    })
+                }).addTo(map).bindPopup("You (Driver)");
+            }
+
+            // Send own location to server
+            fetch("/update-location/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
+                body: JSON.stringify({
+                    latitude: lat,
+                    longitude: lng
+                })
+            });
+        }, function(error) {
+            console.error("Location error:", error);
+        }, {
+            enableHighAccuracy: true
+        });
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let cookie of cookies) {
+                    cookie = cookie.trim();
+                    if (cookie.startsWith(name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.split('=')[1]);
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        function updateMarkers() {
+            fetch("/location/get-locations/")
+                .then(response => response.json())
+                .then(data => {
+                    data.locations.forEach(loc => {
+                        if (loc.role === 'student') {
+                            var key = loc.name + '-student';
+                            var icon = L.icon({
+                                iconUrl: '/static/icons/student_icon.png',
+                                iconSize: [32, 32]
+                            });
+
+                            if (markers[key]) {
+                                markers[key].setLatLng([loc.latitude, loc.longitude]);
+                            } else {
+                                markers[key] = L.marker([loc.latitude, loc.longitude], {icon: icon})
+                                    .addTo(map)
+                                    .bindPopup("Student: " + loc.name);
+                            }
+                        }
+                    });
+                });
+        }
+
+        // Refresh every 5 seconds
+        setInterval(updateMarkers, 5000);
+    </script>
+</body>
+</html>

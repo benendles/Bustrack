@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -73,7 +75,7 @@
 </head>
 <body>
     <h1>BUSTRACK</h1>
-    <img src="/SchoolBusTracking/image/bus_4931382.png" alt="Bus Image">
+    <img src="{% static 'images/bus_4931382.png' %}" alt="Bus Image">
 
     <div class="btn-container">
         <a href="{% url 'signup' %}" class="btn">Sign Up</a>

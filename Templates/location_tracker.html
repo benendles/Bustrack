@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Location Tracker</title>
+    <title>Student Loaction</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -27,7 +27,7 @@
     </style>
 </head>
 <body>
-    <h2>Live Location Tracker</h2>
+    <h2>Welcome, Student!</h2>
     <div id="map"></div>
 
     <!-- Leaflet JS -->
@@ -40,25 +40,25 @@
             attribution: '© OpenStreetMap'
         }).addTo(map);
 
-        var markers = {};  // Store markers keyed by username-role
+        var markers = {};
 
-        // Show your own location as a marker
+        // Show driver's own location as a marker
         navigator.geolocation.watchPosition(function(position) {
             var lat = position.coords.latitude;
             var lng = position.coords.longitude;
 
             map.setView([lat, lng], 16);
 
-            // Show your own marker (key: 'me')
+            // Show driver's own marker (key: 'me')
             if (markers['me']) {
                 markers['me'].setLatLng([lat, lng]);
             } else {
                 markers['me'] = L.marker([lat, lng], {
                     icon: L.icon({
-                        iconUrl: '/static/icons/student_icon.png', // Change icon as needed
+                        iconUrl: "/image/location_icon.png",
                         iconSize: [32, 32]
                     })
-                }).addTo(map).bindPopup("You are here");
+                }).addTo(map).bindPopup("You (Student)");
             }
 
             // Send own location to server
@@ -75,6 +75,7 @@
             });
         }, function(error) {
             console.error("Location error:", error);
+            alert("Unable to retrieve your location.");
         }, {
             enableHighAccuracy: true
         });
@@ -99,27 +100,27 @@
                 .then(response => response.json())
                 .then(data => {
                     data.locations.forEach(loc => {
-                        var key = loc.name + '-' + loc.role;
-                        var icon = L.icon({
-                            iconUrl: loc.role === 'driver' ? '/static/icons/driver_icon.png' :
-                                        loc.role === 'student' ? '/static/icons/student_icon.png' :
-                                        '/static/icons/parent_icon.png',
-                            iconSize: [32, 32]
-                        });
+                        if (loc.role === 'student') {
+                            var key = loc.name + '-student';
+                            var icon = L.icon({
+                                iconUrl: '/static/icons/student_icon.png',
+                                iconSize: [32, 32]
+                            });
 
-                        if (markers[key]) {
-                            markers[key].setLatLng([loc.latitude, loc.longitude]);
-                        } else {
-                            markers[key] = L.marker([loc.latitude, loc.longitude], {icon: icon})
-                                .addTo(map)
-                                .bindPopup(loc.role + ": " + loc.name);
+                            if (markers[key]) {
+                                markers[key].setLatLng([loc.latitude, loc.longitude]);
+                            } else {
+                                markers[key] = L.marker([loc.latitude, loc.longitude], {icon: icon})
+                                    .addTo(map)
+                                    .bindPopup("Student: " + loc.name);
+                            }
                         }
                     });
                 });
         }
 
-        // Refresh every second (1000 ms)
-        setInterval(updateMarkers, 1000);
+        // Refresh every 5 seconds
+        setInterval(updateMarkers, 5000);
     </script>
 </body>
 </html>

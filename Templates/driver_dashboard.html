@@ -99,10 +99,10 @@
                 .then(response => response.json())
                 .then(data => {
                     data.locations.forEach(loc => {
-                        if (loc.role === 'student') {
-                            var key = loc.name + '-student';
+                        if (loc.role === 'Driver') {
+                            var key = loc.name + '-Driver';
                             var icon = L.icon({
-                                iconUrl: '/static/icons/student_icon.png',
+                                iconUrl: '../image/5094676_gps_location_navigation_pin_icon.png',
                                 iconSize: [32, 32]
                             });
 
@@ -111,7 +111,7 @@
                             } else {
                                 markers[key] = L.marker([loc.latitude, loc.longitude], {icon: icon})
                                     .addTo(map)
-                                    .bindPopup("Student: " + loc.name);
+                                    .bindPopup("Driver: " + loc.name);
                             }
                         }
                     });

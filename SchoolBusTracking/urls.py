@@ -18,13 +18,15 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from authentication import views as auth_views
 
 urlpatterns = [
     path('location/', include('location.urls')),
     path('barcode/', include('barcode.urls')),
     path('admin/', admin.site.urls),
     path('', include('authentication.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
+    path('accounts/signin', auth_views.signin, name='signin'),
+    path('accounts/signup', auth_views.signup, name='signup'),
 
 ]
 from django.conf import settings

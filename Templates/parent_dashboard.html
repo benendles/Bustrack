@@ -2,72 +2,558 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Parent Dashboard</title>
+    <title>Parent Dashboard - School Bus Tracker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        #map {
-            height: 80vh;
-            width: 100%;
-            max-width: 900px;
-            margin: 40px auto;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
+
         body {
-            background: #f4f6f8;
-            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            color: #333;
         }
-        h2 {
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: #667eea;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .status-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #10b981;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .status-badge.offline {
+            background: #ef4444;
+        }
+
+        .last-update {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 30px;
+            height: calc(100vh - 180px);
+        }
+
+        .map-container {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .map-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .map-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .map-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .map-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .map-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        #map {
+            height: calc(100% - 60px);
+            width: 100%;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .card-header i {
+            font-size: 1.2rem;
+            color: #667eea;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .driver-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .driver-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .driver-item:hover {
+            background: #e2e8f0;
+            transform: translateX(2px);
+        }
+
+        .driver-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #10b981;
+        }
+
+        .driver-status.offline {
+            background: #ef4444;
+        }
+
+        .driver-info h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 2px;
+        }
+
+        .driver-info p {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .stat-item {
             text-align: center;
-            margin-top: 30px;
-            color: #2a3cff;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 12px;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            color: #6b7280;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e5e7eb;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .refresh-indicator {
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #6b7280;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .refresh-indicator.active {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            
+            .map-container {
+                height: 60vh;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
         }
     </style>
 </head>
 <body>
-    <h2>Welcome, Parent!</h2>
-    <div id="map"></div>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-bus"></i>
+                <h1>School Bus Tracker</h1>
+            </div>
+            <div class="status-info">
+                <div class="status-badge" id="connectionStatus">
+                    <i class="fas fa-wifi"></i>
+                    <span>Connected</span>
+                </div>
+                <div class="last-update" id="lastUpdate">
+                    Last updated: Just now
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="dashboard-grid">
+            <div class="map-container">
+                <div class="map-header">
+                    <div class="map-title">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Live Bus Locations
+                    </div>
+                    <div class="map-controls">
+                        <button class="map-btn" onclick="centerMap()">
+                            <i class="fas fa-crosshairs"></i> Center
+                        </button>
+                        <button class="map-btn" onclick="toggleAutoRefresh()">
+                            <i class="fas fa-sync-alt"></i> Auto-refresh
+                        </button>
+                    </div>
+                </div>
+                <div id="map"></div>
+                <div class="refresh-indicator" id="refreshIndicator">
+                    <div class="spinner"></div>
+                    Updating locations...
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="info-card">
+                    <div class="card-header">
+                        <i class="fas fa-users"></i>
+                        <span class="card-title">Active Drivers</span>
+                    </div>
+                    <div class="driver-list" id="driverList">
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            Loading drivers...
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-card">
+                    <div class="card-header">
+                        <i class="fas fa-chart-bar"></i>
+                        <span class="card-title">Statistics</span>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-number" id="totalDrivers">0</div>
+                            <div class="stat-label">Total Drivers</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" id="activeDrivers">0</div>
+                            <div class="stat-label">Active Now</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
+        // Initialize map
         var map = L.map('map').setView([0, 0], 2);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
-            attribution: '© OpenStreetMap'
+            attribution: '© OpenStreetMap contributors'
         }).addTo(map);
 
         var markers = {};
+        var autoRefresh = true;
+        var lastUpdateTime = new Date();
+
+        // Custom driver icon
+        var driverIcon = L.icon({
+            iconUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iMTUiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZT0iIzY2N0VFQSIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxwYXRoIGQ9Ik04IDEySDI0VjE2SDhWMTJaIiBmaWxsPSIjNjY3RUVBIi8+CjxwYXRoIGQ9Ik0xMCAxNkg2QzUuNDQ3NzIgMTYgNSAxNi40NDc3IDUgMTdWMTlDNSAxOS41NTIzIDUuNDQ3NzIgMjAgNiAyMEgxMFYxNloiIGZpbGw9IiM2NjdFRUEiLz4KPHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPC9zdmc+',
+            iconSize: [32, 32],
+            iconAnchor: [16, 16],
+            popupAnchor: [0, -16]
+        });
 
         function updateMarkers() {
+            if (!autoRefresh) return;
+            
+            const refreshIndicator = document.getElementById('refreshIndicator');
+            refreshIndicator.classList.add('active');
+            
             fetch("/location/get-locations/")
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
                 .then(data => {
-                    data.locations.forEach(loc => {
-                        if (loc.role === 'driver') {
-                            var key = loc.name + '-driver';
-                            var icon = L.icon({
-                                iconUrl: '/static/icons/driver_icon.png',
-                                iconSize: [32, 32]
-                            });
-
-                            if (markers[key]) {
-                                markers[key].setLatLng([loc.latitude, loc.longitude]);
-                            } else {
-                                markers[key] = L.marker([loc.latitude, loc.longitude], {icon: icon})
-                                    .addTo(map)
-                                    .bindPopup("Driver: " + loc.name);
-                            }
+                    updateDriverList(data.locations);
+                    updateStats(data.locations);
+                    
+                    const drivers = data.locations.filter(loc => loc.role === 'driver');
+                    
+                    // Remove markers for drivers no longer in the list
+                    Object.keys(markers).forEach(key => {
+                        if (!drivers.find(d => (d.name + '-driver') === key)) {
+                            map.removeLayer(markers[key]);
+                            delete markers[key];
                         }
                     });
+                    
+                    // Update or create markers for current drivers
+                    drivers.forEach(loc => {
+                        const key = loc.name + '-driver';
+                        const popupContent = `
+                            <div style="text-align: center; padding: 5px;">
+                                <strong>${loc.name}</strong><br>
+                                <small>Driver • Last seen: ${new Date().toLocaleTimeString()}</small>
+                            </div>
+                        `;
+
+                        if (markers[key]) {
+                            markers[key].setLatLng([loc.latitude, loc.longitude]);
+                            markers[key].setPopupContent(popupContent);
+                        } else {
+                            markers[key] = L.marker([loc.latitude, loc.longitude], {icon: driverIcon})
+                                .addTo(map)
+                                .bindPopup(popupContent);
+                        }
+                    });
+                    
+                    lastUpdateTime = new Date();
+                    updateLastUpdateTime();
+                    updateConnectionStatus(true);
+                })
+                .catch(error => {
+                    console.error('Error fetching locations:', error);
+                    updateConnectionStatus(false);
+                })
+                .finally(() => {
+                    setTimeout(() => {
+                        refreshIndicator.classList.remove('active');
+                    }, 500);
                 });
         }
 
-        // Refresh every 5 seconds
+        function updateDriverList(locations) {
+            const driverList = document.getElementById('driverList');
+            const drivers = locations.filter(loc => loc.role === 'driver');
+            
+            if (drivers.length === 0) {
+                driverList.innerHTML = '<div style="text-align: center; color: #6b7280; padding: 20px;">No active drivers</div>';
+                return;
+            }
+            
+            driverList.innerHTML = drivers.map(driver => `
+                <div class="driver-item" onclick="focusDriver('${driver.name}')">
+                    <div class="driver-status"></div>
+                    <div class="driver-info">
+                        <h4>${driver.name}</h4>
+                        <p>Active • ${new Date().toLocaleTimeString()}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateStats(locations) {
+            const drivers = locations.filter(loc => loc.role === 'driver');
+            document.getElementById('totalDrivers').textContent = drivers.length;
+            document.getElementById('activeDrivers').textContent = drivers.length;
+        }
+
+        function updateConnectionStatus(connected) {
+            const statusBadge = document.getElementById('connectionStatus');
+            if (connected) {
+                statusBadge.className = 'status-badge';
+                statusBadge.innerHTML = '<i class="fas fa-wifi"></i><span>Connected</span>';
+            } else {
+                statusBadge.className = 'status-badge offline';
+                statusBadge.innerHTML = '<i class="fas fa-wifi"></i><span>Offline</span>';
+            }
+        }
+
+        function updateLastUpdateTime() {
+            const lastUpdate = document.getElementById('lastUpdate');
+            const now = new Date();
+            const diff = Math.floor((now - lastUpdateTime) / 1000);
+            
+            if (diff < 60) {
+                lastUpdate.textContent = 'Last updated: Just now';
+            } else if (diff < 3600) {
+                lastUpdate.textContent = `Last updated: ${Math.floor(diff / 60)}m ago`;
+            } else {
+                lastUpdate.textContent = `Last updated: ${Math.floor(diff / 3600)}h ago`;
+            }
+        }
+
+        function centerMap() {
+            const markerKeys = Object.keys(markers);
+            if (markerKeys.length === 0) return;
+            
+            if (markerKeys.length === 1) {
+                map.setView(markers[markerKeys[0]].getLatLng(), 15);
+            } else {
+                const group = new L.featureGroup(Object.values(markers));
+                map.fitBounds(group.getBounds().pad(0.1));
+            }
+        }
+
+        function toggleAutoRefresh() {
+            autoRefresh = !autoRefresh;
+            const btn = event.target.closest('.map-btn');
+            if (autoRefresh) {
+                btn.innerHTML = '<i class="fas fa-sync-alt"></i> Auto-refresh';
+                btn.style.background = 'rgba(255, 255, 255, 0.2)';
+            } else {
+                btn.innerHTML = '<i class="fas fa-pause"></i> Paused';
+                btn.style.background = 'rgba(239, 68, 68, 0.8)';
+            }
+        }
+
+        function focusDriver(driverName) {
+            const key = driverName + '-driver';
+            if (markers[key]) {
+                map.setView(markers[key].getLatLng(), 16);
+                markers[key].openPopup();
+            }
+        }
+
+        // Auto-refresh every 5 seconds
         setInterval(updateMarkers, 5000);
+        setInterval(updateLastUpdateTime, 30000);
+        
         // Initial load
         updateMarkers();
     </script>

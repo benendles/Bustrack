@@ -1,18 +1,469 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>User Info</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - {{ person.name }}</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .profile-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            border-radius: 24px 24px 0 0;
+        }
+
+        .profile-header {
+            margin-bottom: 30px;
+        }
+
+        .profile-image-container {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #fff;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease;
+        }
+
+        .profile-image:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-image-fallback {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid #fff;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            color: white;
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .profile-status {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 20px;
+            height: 20px;
+            background: #10b981;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .profile-role {
+            color: #6b7280;
+            font-size: 1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .profile-details {
+            margin: 30px 0;
+        }
+
+        .detail-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .detail-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .detail-icon {
+            color: #667eea;
+            font-size: 1.2rem;
+        }
+
+        .detail-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .amount-display {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border-radius: 12px;
+            padding: 4px 12px;
+            display: inline-block;
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 140px;
+            justify-content: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(107, 114, 128, 0.1);
+            color: #374151;
+            border: 2px solid rgba(107, 114, 128, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(107, 114, 128, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .info-item {
+            background: rgba(255, 255, 255, 0.7);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .info-item h4 {
+            color: #6b7280;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .info-item p {
+            color: #1f2937;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .loading-spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        @media (max-width: 600px) {
+            .profile-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            .profile-image,
+            .profile-image-fallback {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .profile-name {
+                font-size: 1.8rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animation for page load */
+        .profile-container {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>{{ person.name }}</h1>
-    <p>Amount: {{ person.amount }}</p>
-    <img src="{{ person.picture.url }}" alt="User Picture" width="200">
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-image-container">
+                {% if person.picture %}
+                    <img src="{{ person.picture.url }}" alt="{{ person.name }}" class="profile-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="profile-image-fallback" style="display: none;">
+                        {{ person.name|first|upper }}
+                    </div>
+                {% else %}
+                    <div class="profile-image-fallback">
+                        {{ person.name|first|upper }}
+                    </div>
+                {% endif %}
+                <div class="profile-status" title="Active"></div>
+            </div>
+            
+            <h1 class="profile-name">{{ person.name }}</h1>
+            <p class="profile-role">User Profile</p>
+        </div>
 
-    <form action="{% url 'show_qr' person.pk %}" method="get">
-        <button type="submit">View QR Code</button>
-    </form>
-    <!-- Or as a link:
-    <a href="{% url 'show_qr' person.pk %}">View QR Code</a>
-    -->
+        <div class="profile-details">
+            <div class="detail-card">
+                <div class="detail-header">
+                    <i class="fas fa-wallet detail-icon"></i>
+                    <span class="detail-label">Account Balance</span>
+                </div>
+                <div class="detail-value">
+                    <span class="amount-display">${{ person.amount|floatformat:2 }}</span>
+                </div>
+            </div>
+
+            <div class="info-grid">
+                <div class="info-item">
+                    <h4>Member Since</h4>
+                    <p>{{ person.date_joined|date:"M Y"|default:"Recently" }}</p>
+                </div>
+                <div class="info-item">
+                    <h4>Status</h4>
+                    <p>Active</p>
+                </div>
+                <div class="info-item">
+                    <h4>ID</h4>
+                    <p>#{{ person.pk }}</p>
+                </div>
+                <div class="info-item">
+                    <h4>Last Activity</h4>
+                    <p>{{ person.last_login|timesince|default:"Today" }} ago</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="{% url 'show_qr' person.pk %}" class="btn btn-primary" onclick="showLoading(this)">
+                <i class="fas fa-qrcode"></i>
+                <span class="loading-spinner"></span>
+                <span class="btn-text">View QR Code</span>
+            </a>
+            
+        </div>
+
+        <!-- Additional Actions -->
+        <div class="action-buttons" style="margin-top: 15px;">
+            <button class="btn btn-secondary" onclick="shareProfile()" style="width: 100%;">
+                <i class="fas fa-share-alt"></i>
+                <span>Share Profile</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function showLoading(button) {
+            const spinner = button.querySelector('.loading-spinner');
+            const text = button.querySelector('.btn-text');
+            const icon = button.querySelector('.fas');
+            
+            button.disabled = true;
+            spinner.style.display = 'inline-block';
+            icon.style.display = 'none';
+            text.textContent = 'Generating...';
+            
+            // Re-enable after a delay (in case of errors)
+            setTimeout(() => {
+                button.disabled = false;
+                spinner.style.display = 'none';
+                icon.style.display = 'inline-block';
+                text.textContent = 'View QR Code';
+            }, 5000);
+        }
+
+        function shareProfile() {
+            if (navigator.share) {
+                navigator.share({
+                    title: '{{ person.name }} - Profile',
+                    text: 'Check out {{ person.name }}\'s profile',
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    const btn = event.target.closest('.btn');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check"></i><span>Link Copied!</span>';
+                    btn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                    btn.style.color = 'white';
+                    
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.style.background = '';
+                        btn.style.color = '';
+                    }, 2000);
+                }).catch(() => {
+                    alert('Unable to copy link. Please copy the URL manually.');
+                });
+            }
+        }
+
+        // Add some interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate amount on load
+            const amountElement = document.querySelector('.amount-display');
+            if (amountElement) {
+                const finalAmount = parseFloat('{{ person.amount }}');
+                let currentAmount = 0;
+                const increment = finalAmount / 30;
+                const timer = setInterval(() => {
+                    currentAmount += increment;
+                    if (currentAmount >= finalAmount) {
+                        currentAmount = finalAmount;
+                        clearInterval(timer);
+                    }
+                    amountElement.textContent = '+ ' + currentAmount.toFixed(2);
+                }, 50);
+            }
+
+            // Add hover effects to info items
+            const infoItems = document.querySelectorAll('.info-item');
+            infoItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px)';
+                    this.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.1)';
+                });
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = '';
+                });
+            });
+        });
+
+        // Add error handling for image loading
+        function handleImageError(img) {
+            img.style.display = 'none';
+            img.nextElementSibling.style.display = 'flex';
+        }
+    </script>
 </body>
 </html>

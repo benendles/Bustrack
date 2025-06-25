@@ -6,7 +6,9 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
 from .forms import SignUpForm
-from .models import User, UserLocation, BusRoute, StudentProfile
+from .models import  UserLocation, StudentProfile, BusRoute, DriverProfile
+from django.contrib.auth import get_user_model
+User = get_user_model()
 import json
 
 def home(request):
@@ -14,40 +16,83 @@ def home(request):
 
 @login_required
 def student_dashboard(request):
-    # Get driver location if student is assigned to a route
-    driver_location = None
-    try:
-        bus_route = request.user.bus_routes.first()
-        if bus_route:
-            driver_location = UserLocation.objects.get(user=bus_route.driver)
-    except UserLocation.DoesNotExist:
-        pass
-    
+    return render(request, 'student_dashboard.html')
+
+
+@login_required
+def student_location(request):
+    driver_locations = []
+
+    # Get all driver profiles
+    drivers = DriverProfile.objects.select_related('user').all()
+
+    for driver in drivers:
+        try:
+            location = driver.user.location  # Related via OneToOneField in UserLocation
+            print(location)
+            driver_locations.append({
+                'first_name': driver.user.first_name,
+                'last_name': driver.user.last_name,
+                'latitude': float(location.latitude) if location.latitude else None,
+                'longitude': float(location.longitude) if location.longitude else None,
+                'last_updated': location.last_updated,
+            })
+        except UserLocation.DoesNotExist:
+            continue
+
     context = {
-        'driver_location': driver_location,
+        'driver_location': driver_locations,
+        "drivers": drivers
     }
-    return render(request, 'student_dashboard.html', context)
+    print(driver_locations)
+    return render(request, 'location_tracker.html', context)
 
 @login_required
 def driver_dashboard(request):
-    # Get all students assigned to this driver's routes
     students_locations = []
+
+
+    # Confirm the logged-in user is a driver
+    if request.user.role != 'driver':
+        # return render(request, 'unauthorized.html', status=403)
+        print('Unauthorized')
+
     try:
-        bus_routes = BusRoute.objects.filter(driver=request.user)
-        for route in bus_routes:
-            for student in route.students.all():
-                try:
-                    location = UserLocation.objects.get(user=student)
-                    if location.is_online:
-                        students_locations.append({
-                            'user': student,
-                            'location': location
-                        })
-                except UserLocation.DoesNotExist:
-                    pass
-    except Exception as e:
-        pass
-    
+       # Assuming the driver/student has one route
+        bus_route = BusRoute.objects.filter(driver=request.user).first() 
+        
+        students = [] # or use .get() if guaranteed to exist
+
+
+        if bus_route:
+            students = bus_route.students.all()
+            print(students)
+        else:
+            print('No route found for this driver.')
+
+        
+
+        for student in students:
+            print(student)
+            try:
+                location = student.location  # Related name in UserLocation
+                if location.is_online:
+                    students_locations.append({
+                        'username': student.username,
+                        'first_name': student.first_name,
+                        'last_name': student.last_name,
+                        'latitude': float(location.latitude),
+                        'longitude': float(location.longitude),
+                        'last_updated': location.last_updated,
+                    })
+            except UserLocation.DoesNotExist:
+                continue
+
+    except BusRoute.DoesNotExist:
+        pass  # Optionally log: driver has no route assigned
+
+    print(students_locations)
+
     context = {
         'students_locations': students_locations,
     }
@@ -110,11 +155,11 @@ def update_location(request):
 def get_locations(request):
     """API endpoint to get real-time locations based on user role"""
     locations = []
-    
+
     if request.user.role == 'driver':
-        # Driver sees all students in their routes
-        bus_routes = BusRoute.objects.filter(driver=request.user)
-        for route in bus_routes:
+        # Safely get route for driver
+        try:
+            route = BusRoute.objects.get(driver=request.user)
             for student in route.students.all():
                 try:
                     location = UserLocation.objects.get(user=student, is_online=True)
@@ -130,9 +175,10 @@ def get_locations(request):
                     })
                 except UserLocation.DoesNotExist:
                     pass
-                    
+        except BusRoute.DoesNotExist:
+            pass  # Optional: log that driver has no route
+
     elif request.user.role == 'student':
-        # Student sees their driver
         bus_route = request.user.bus_routes.first()
         if bus_route:
             try:
@@ -149,32 +195,33 @@ def get_locations(request):
                 })
             except UserLocation.DoesNotExist:
                 pass
-                
+
     elif request.user.role == 'parent':
-        # Parent sees their children and the driver
         children = StudentProfile.objects.filter(parent=request.user)
         driver_added = False
-        
+
         for child_profile in children:
+            child = child_profile.user
+
             # Add child location
             try:
-                location = UserLocation.objects.get(user=child_profile.user, is_online=True)
+                location = UserLocation.objects.get(user=child, is_online=True)
                 locations.append({
-                    'id': child_profile.user.id,
-                    'username': child_profile.user.username,
-                    'first_name': child_profile.user.first_name,
-                    'last_name': child_profile.user.last_name,
-                    'role': child_profile.user.role,
+                    'id': child.id,
+                    'username': child.username,
+                    'first_name': child.first_name,
+                    'last_name': child.last_name,
+                    'role': child.role,
                     'latitude': float(location.latitude) if location.latitude else None,
                     'longitude': float(location.longitude) if location.longitude else None,
                     'last_updated': location.last_updated.isoformat(),
                 })
             except UserLocation.DoesNotExist:
                 pass
-            
-            # Add driver location (only once)
+
+            # Add driver location once
             if not driver_added:
-                bus_route = child_profile.user.bus_routes.first()
+                bus_route = child.bus_routes.first()
                 if bus_route:
                     try:
                         location = UserLocation.objects.get(user=bus_route.driver, is_online=True)
@@ -191,7 +238,7 @@ def get_locations(request):
                         driver_added = True
                     except UserLocation.DoesNotExist:
                         pass
-    
+
     return JsonResponse({'locations': locations})
 
 @csrf_exempt

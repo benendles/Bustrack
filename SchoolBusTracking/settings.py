@@ -135,3 +135,5 @@ GOOGLE_VISION_KEY_PATH = os.path.join(BASE_DIR, "google_vision_key.json")
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_VISION_KEY_PATH
 # LOGIN_REDIRECT_URL = 'student/dashboard'
 AUTH_USER_MODEL = 'authentication.User'
+
+LOGIN_URL = '/signin'

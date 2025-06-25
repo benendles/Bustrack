@@ -245,6 +245,24 @@
                 `;
             }
         }
+         // Update driver marker on map
+        function updateDriverMarker() {
+            if (driverMarker) map.removeLayer(driverMarker);
+            
+            if (driverLocation) {
+                driverMarker = L.marker([driverLocation.lat, driverLocation.lng], {
+                    icon: L.divIcon({
+                        className: 'custom-marker',
+                        html: '<div style="background: #FF9800; width: 30px; height: 30px; border-radius: 50%; border: 4px solid white; box-shadow: 0 2px 12px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold;">🚌</div>',
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 15]
+                    })
+                }).addTo(map);
+                
+                driverMarker.bindPopup('Bus Driver (You)');
+                map.setView([driverLocation.lat, driverLocation.lng], 13);
+            }
+        }
         
         // Send location to server
         function updateLocationOnServer() {

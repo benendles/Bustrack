@@ -467,6 +467,31 @@
                 });
         }
 
+// Get user's current location
+        function getUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        studentLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        
+                        updateStudentLocationDisplay();
+                        updateLocationOnServer();
+                        updateMap();
+                    },
+                    function(error) {
+                        console.error('Error getting location:', error);
+                        document.getElementById('student-location').innerHTML = 
+                            '<p style="color: #f44336;">Unable to get your location</p>';
+                    }
+                );
+            } else {
+                document.getElementById('student-location').innerHTML = 
+                    '<p style="color: #f44336;">Geolocation not supported</p>';
+            }
+        }
         function updateDriverList(locations) {
             const driverList = document.getElementById('driverList');
             const drivers = locations.filter(loc => loc.role === 'driver');

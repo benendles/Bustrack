@@ -60,9 +60,15 @@ def create_user_profile(sender, instance, created, **kwargs):
 class StudentProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     student_id = models.IntegerField(null=True, blank=True)
-    parent = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, 
-                              related_name='children', limit_choices_to={'role': 'parent'})
-
+    parent = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='children',
+        limit_choices_to={'role': 'parent'}  # assumes 'role' is a field in your User model
+    )
+    routes = models.ManyToManyField('BusRoute', blank=True)
 class DriverManager(BaseUserManager):
     def get_queryset(self, *args, **kwargs):
         results = super().get_queryset(*args, **kwargs)
@@ -79,6 +85,7 @@ class Driver(User):
 class DriverProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     driver_id = models.IntegerField(null=True, blank=True)
+    routes = models.ManyToManyField('BusRoute', blank=True)
     license_number = models.CharField(max_length=50, null=True, blank=True)
 
 @receiver(post_save, sender=Driver)

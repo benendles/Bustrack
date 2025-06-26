@@ -8,8 +8,12 @@ from google.cloud import vision
 
 
 # Set Google Application Credentials properly (best: in settings or dynamically)
-credentials_path = os.path.join(settings.BASE_DIR, "google_vision_key.json")
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credentials_path
+if "GOOGLE_VISION_JSON" in os.environ:
+    service_account_json = os.environ["GOOGLE_VISION_JSON"]
+    credentials_path = "/tmp/google_vision_key.json"
+    with open(credentials_path, "w") as f:
+        f.write(service_account_json)
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credentials_path
 
 
 def extract_text_from_image(image_path):

@@ -31,6 +31,7 @@ class UserLocation(models.Model):
 
 class BusRoute(models.Model):
     name = models.CharField(max_length=100)
+    students = models.ManyToManyField(User, related_name='bus_routes')
     driver = models.ForeignKey(
         'DriverProfile',
         on_delete=models.SET_NULL,

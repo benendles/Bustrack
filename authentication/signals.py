@@ -36,6 +36,7 @@ def generate_random_route_name(length=8):
 
 # ✅ Automatically assign student to a bus route when their profile is created
 @receiver(post_save, sender=StudentProfile)
+@receiver(post_save, sender=StudentProfile)
 def assign_bus_route(sender, instance, created, **kwargs):
     if created:
         # Ensure the student isn't already in a route
@@ -45,7 +46,10 @@ def assign_bus_route(sender, instance, created, **kwargs):
             route_name = generate_random_route_name()
             bus_route = BusRoute.objects.create(name=route_name)
 
-            # Add the student to the route
-            bus_route.students.add(instance)
+            # Add the student (User instance) to the route's students
+            bus_route.students.add(instance.user)
+
+            # Also update StudentProfile.routes (optional, for consistency)
+            instance.routes.add(bus_route)
 
             print(f"✅ Assigned {instance.user.username} to {bus_route.name}")

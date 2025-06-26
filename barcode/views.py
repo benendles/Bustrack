@@ -2,7 +2,15 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Website
 from .forms import WebsiteForm
 from django.core.files.storage import default_storage
+from django.conf import settings
+import os
 from google.cloud import vision
+
+
+# Set Google Application Credentials properly (best: in settings or dynamically)
+credentials_path = os.path.join(settings.BASE_DIR, "google_vision_key.json")
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = credentials_path
+
 
 def extract_text_from_image(image_path):
     client = vision.ImageAnnotatorClient()
@@ -15,6 +23,7 @@ def extract_text_from_image(image_path):
         return texts[0].description
     return ""
 
+
 def submit_info(request):
     error = None
     if request.method == 'POST':
@@ -23,7 +32,6 @@ def submit_info(request):
             name_input = form.cleaned_data['name']
             amount_input = str(form.cleaned_data['amount'])
             receipt_image = request.FILES['receipt_image']
-            
 
             # Save receipt image temporarily
             image_path = default_storage.save('temp_receipt.jpg', receipt_image)
@@ -45,9 +53,12 @@ def submit_info(request):
         form = WebsiteForm()
     return render(request, 'submit_info.html', {'form': form, 'error': error})
 
+
 def view_info(request, pk):
     person = get_object_or_404(Website, pk=pk)
     return render(request, 'view_info.html', {'person': person})
+
+
 def show_qr(request, pk):
     person = get_object_or_404(Website, pk=pk)
-    return render(request, 'qr.html', {'person': person})   
+    return render(request, 'qr.html', {'person': person})

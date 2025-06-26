@@ -23,9 +23,7 @@ SECRET_KEY = 'django-insecure-u@_vb+^wh(jjd@k5m^cjpnixs*bwa*r=h#de4(6%p=4$9(+k#v
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
-
-
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
 # Application definition
 
 INSTALLED_APPS = [
@@ -145,3 +143,8 @@ os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_VISION_KEY_PATH
 AUTH_USER_MODEL = 'authentication.User'
 
 LOGIN_URL = '/signin'
+port = int(os.environ.get("PORT", 8000))
+
+import os
+
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")

@@ -11,10 +11,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -24,8 +23,7 @@ SECRET_KEY = 'django-insecure-u@_vb+^wh(jjd@k5m^cjpnixs*bwa*r=h#de4(6%p=4$9(+k#v
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
 
 # Application definition
@@ -118,8 +116,18 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
+# Base directory, usually already defined:
 
-STATIC_URL = 'static/'
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if isinstance(BASE_DIR, str):
+    BASE_DIR = Path(BASE_DIR)
+
+STATIC_URL = '/static/'
+
+# Add this for collectstatic to work:
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+print(f"BASE_DIR type: {type(BASE_DIR)}; value: {BASE_DIR}")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

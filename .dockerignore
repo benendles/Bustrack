@@ -1,0 +1,34 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+*.env
+
+# Django SQLite DB file (only if you don’t want it baked into image)
+db.sqlite3
+
+# Static/media files (unless handled by WhiteNoise or collected during build)
+static/
+media/
+
+# IDE/editor configs
+.vscode/
+.idea/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml

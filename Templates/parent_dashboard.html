@@ -492,6 +492,24 @@
                     '<p style="color: #f44336;">Geolocation not supported</p>';
             }
         }
+              // Update driver marker on map
+      function updateParentMarker() {
+        if (ParentMarker) map.removeLayer(ParentMarker);
+
+        if (ParentLocation) {
+          ParentLocation = L.marker([ParentLocation.lat, ParentLocation.lng], {
+            icon: L.divIcon({
+              className: "custom-marker",
+              html: '<div style="background: #FF9800; width: 30px; height: 30px; border-radius: 50%; border: 4px solid white; box-shadow: 0 2px 12px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; font-weight: bold;">🚌</div>',
+              iconSize: [30, 30],
+              iconAnchor: [15, 15],
+            }),
+          }).addTo(map);
+
+          ParentMarker.bindPopup("Parent(You)");
+          map.setView([ParentLocation.lat, ParentLocation.lng], 13);
+        }
+      }
         function updateDriverList(locations) {
             const driverList = document.getElementById('driverList');
             const drivers = locations.filter(loc => loc.role === 'driver');

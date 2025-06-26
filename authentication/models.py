@@ -31,9 +31,12 @@ class UserLocation(models.Model):
 
 class BusRoute(models.Model):
     name = models.CharField(max_length=100)
-    driver = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': 'driver'})
-    students = models.ManyToManyField(User, related_name='bus_routes', limit_choices_to={'role': 'student'})
-    created_at = models.DateTimeField(auto_now_add=True)
+    driver = models.ForeignKey(
+        'DriverProfile',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True
+    )
     
     def __str__(self):
         return f"Route {self.name} - {self.driver.username}"

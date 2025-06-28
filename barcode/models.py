@@ -15,12 +15,12 @@ class Website(models.Model):
     def __str__(self):
         return f"Extracted Image {self.id} - {self.name}"
 
-    def generate_qr(self):
-        # Generate the URL for this user's info page
-        url = f"{settings.BASE_URL}{reverse('view_info', args=[self.id])}"
-        qr_img = qrcode.make(url)
-        qr_img = qr_img.convert('RGB')
-        buffer = BytesIO()
-        qr_img.save(buffer, format='PNG')
-        self.qr_code.save(f'qr_code_{self.name}.png', ContentFile(buffer.getvalue()), save=False)
-        buffer.close()
+   
+def generate_qr(self):
+    url = f"{settings.BASE_URL}{reverse('view_info', args=[self.id])}"
+    qr_img = qrcode.make(url)
+    qr_img = qr_img.convert('RGB')
+    buffer = BytesIO()
+    qr_img.save(buffer, format='PNG')
+    self.qr_code.save(f'qr_code_{self.name}.png', ContentFile(buffer.getvalue()), save=False)
+    buffer.close()

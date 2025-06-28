@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect with Your Child - BusTrack</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .search-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .search-form {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .form-control {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+            font-size: 0.9rem;
+            padding: 8px 16px;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+
+        .search-results {
+            margin-top: 2rem;
+        }
+
+        .results-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .student-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .student-card {
+            border: 1px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .student-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .student-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .student-details h4 {
+            color: #333;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .student-details p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .connections-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .connections-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .connection-card {
+            border: 1px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+
+        .status-approved {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .status-rejected {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #e1e5e9;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .info-box {
+            background: rgba(40, 167, 69, 0.1);
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .info-box h4 {
+            color: #28a745;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box p {
+            color: #333;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .student-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .connection-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                <i class="fas fa-users"></i>
+                BusTrack Parent
+            </div>
+            <div class="nav-links">
+                <a href="{% url 'parent_dashboard' %}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="{% url 'signout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Connect with Your Child</h1>
+            <p class="page-subtitle">Search for your child and send a connection request</p>
+        </div>
+
+        <div class="search-section">
+            <div class="info-box">
+                <h4>
+                    <i class="fas fa-info-circle"></i>
+                    How it works
+                </h4>
+                <p>
+                    Search for your child using their name, username, or email. Once you send a connection request, 
+                    your child will need to approve it before you can monitor their bus activities.
+                </p>
+            </div>
+
+            <form method="post" class="search-form">
+                {% csrf_token %}
+                {{ form.search_query }}
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                    Search
+                </button>
+            </form>
+
+            {% if search_performed %}
+                <div class="search-results">
+                    <h3 class="results-title">Search Results</h3>
+                    {% if children %}
+                        <div class="student-grid">
+                            {% for child in children %}
+                                <div class="student-card">
+                                    <div class="student-info">
+                                        <div class="student-avatar">
+                                            {{ child.first_name.0|default:child.username.0|upper }}
+                                        </div>
+                                        <div class="student-details">
+                                            <h4>{{ child.get_full_name|default:child.username }}</h4>
+                                            <p>{{ child.email }}</p>
+                                            <p><i class="fas fa-user"></i> Username: {{ child.username }}</p>
+                                        </div>
+                                    </div>
+                                    <a href="{% url 'request_connection' child.id %}" class="btn btn-success">
+                                        <i class="fas fa-plus"></i>
+                                        Send Request
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-search"></i>
+                            <h3>No Students Found</h3>
+                            <p>No students match your search criteria. Try a different search term.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        {% if existing_connections %}
+            <div class="connections-section">
+                <h3 class="connections-title">Your Connections</h3>
+                {% for connection in existing_connections %}
+                    <div class="connection-card">
+                        <div class="student-info">
+                            <div class="student-avatar">
+                                {{ connection.child.first_name.0|default:connection.child.username.0|upper }}
+                            </div>
+                            <div class="student-details">
+                                <h4>{{ connection.child.get_full_name|default:connection.child.username }}</h4>
+                                <p>{{ connection.child.email }}</p>
+                                <p><small>Requested: {{ connection.requested_at|date:"M d, Y H:i" }}</small></p>
+                            </div>
+                        </div>
+                        <div class="status-badge status-{{ connection.status }}">
+                            {% if connection.status == 'pending' %}
+                                <i class="fas fa-clock"></i> Pending
+                            {% elif connection.status == 'approved' %}
+                                <i class="fas fa-check"></i> Approved
+                            {% else %}
+                                <i class="fas fa-times"></i> Rejected
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

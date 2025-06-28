@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - BusTrack</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #dc3545 0%, #6f42c1 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .user-role {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .welcome-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .welcome-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .users-table th,
+        .users-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .users-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .role-student { background: rgba(40, 167, 69, 0.1); color: #28a745; }
+        .role-parent { background: rgba(0, 123, 255, 0.1); color: #007bff; }
+        .role-driver { background: rgba(255, 193, 7, 0.1); color: #ffc107; }
+        .role-admin { background: rgba(220, 53, 69, 0.1); color: #dc3545; }
+
+        .online-users-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .online-user-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .user-name {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .online-indicator {
+            width: 8px;
+            height: 8px;
+            background: #28a745;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .quick-actions {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #dc3545 0%, #6f42c1 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #138496;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .users-table {
+                font-size: 0.85rem;
+            }
+
+            .users-table th,
+            .users-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                <i class="fas fa-shield-alt"></i>
+                BusTrack Admin
+            </div>
+            <div class="navbar-user">
+                <div class="nav-links">
+                    <a href="{% url 'profile' %}"><i class="fas fa-user"></i> Profile</a>
+                    <a href="{% url 'signout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+                <div class="user-info">
+                    <div class="user-name">{{ user.get_full_name|default:user.username }}</div>
+                    <div class="user-role">System Administrator</div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="welcome-section">
+            <h1 class="welcome-title">Welcome to Admin Dashboard</h1>
+            <p class="welcome-subtitle">Manage users, monitor system activity, and oversee the BusTrack platform</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-number">{{ total_users }}</div>
+                </div>
+                <div class="stat-label">Total Users</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #007bff 0%, #6610f2 100%);">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="stat-number">{{ total_students }}</div>
+                </div>
+                <div class="stat-label">Students</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);">
+                        <i class="fas fa-user-friends"></i>
+                    </div>
+                    <div class="stat-number">{{ total_parents }}</div>
+                </div>
+                <div class="stat-label">Parents</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);">
+                        <i class="fas fa-bus"></i>
+                    </div>
+                    <div class="stat-number">{{ total_drivers }}</div>
+                </div>
+                <div class="stat-label">Drivers</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #dc3545 0%, #6f42c1 100%);">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="stat-number">{{ active_users }}</div>
+                </div>
+                <div class="stat-label">Active Users (24h)</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #6f42c1 0%, #e83e8c 100%);">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="stat-number">{{ recent_registrations }}</div>
+                </div>
+                <div class="stat-label">New Users (7 days)</div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-users"></i>
+                        Recent Users
+                    </h3>
+                </div>
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Joined</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in recent_users %}
+                        <tr>
+                            <td>{{ user.get_full_name|default:"-" }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>
+                                <span class="role-badge role-{{ user.role }}">
+                                    {{ user.get_role_display_name }}
+                                </span>
+                            </td>
+                            <td>{{ user.created_at|date:"M d, Y" }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: #666; font-style: italic;">
+                                No users found
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="dashboard-card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-circle" style="color: #28a745;"></i>
+                        Online Users
+                    </h3>
+                </div>
+                <ul class="online-users-list">
+                    {% for location in online_users %}
+                    <li class="online-user-item">
+                        <div>
+                            <div class="user-name">{{ location.user.get_full_name|default:location.user.username }}</div>
+                            <small style="color: #666;">{{ location.user.get_role_display_name }}</small>
+                        </div>
+                        <div class="online-indicator"></div>
+                    </li>
+                    {% empty %}
+                    <li class="online-user-item">
+                        <span style="color: #666; font-style: italic;">No users currently online</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <h3 class="card-title">
+                <i class="fas fa-bolt"></i>
+                Quick Actions
+            </h3>
+            <div class="action-buttons">
+                <a href="{% url 'admin_users' %}" class="btn btn-primary">
+                    <i class="fas fa-users"></i>
+                    Manage Users
+                </a>
+                <a href="{% url 'admin_receipts' %}" class="btn btn-primary">
+                    <i class="fas fa-receipt"></i>
+                    Verify Receipts
+                </a>
+                <a href="#" class="btn btn-secondary">
+                    <i class="fas fa-route"></i>
+                    Manage Routes
+                </a>
+                <a href="#" class="btn btn-success">
+                    <i class="fas fa-chart-bar"></i>
+                    View Reports
+                </a>
+                <a href="#" class="btn btn-info">
+                    <i class="fas fa-cog"></i>
+                    System Settings
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-refresh dashboard data every 30 seconds
+        setInterval(function() {
+            location.reload();
+        }, 30000);
+
+        // Add click handlers for quick actions
+        document.addEventListener('DOMContentLoaded', function() {
+            const actionButtons = document.querySelectorAll('.action-buttons .btn');
+            actionButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    if (this.getAttribute('href') === '#') {
+                        e.preventDefault();
+                        alert('This feature will be implemented in the next phase.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

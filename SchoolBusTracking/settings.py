@@ -11,9 +11,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import os
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -23,7 +24,10 @@ SECRET_KEY = 'django-insecure-u@_vb+^wh(jjd@k5m^cjpnixs*bwa*r=h#de4(6%p=4$9(+k#v
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+
+ALLOWED_HOSTS = []
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -45,6 +49,10 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'authentication.middleware.SessionSecurityMiddleware',
+    'authentication.middleware.RoleBasedAccessMiddleware',
+    'authentication.middleware.SecurityHeadersMiddleware',
+    'authentication.middleware.RequestLoggingMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -81,23 +89,7 @@ DATABASES = {
 }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
 
 
 # Internationalization
@@ -114,18 +106,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-# Base directory, usually already defined:
-
-import os
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if isinstance(BASE_DIR, str):
-    BASE_DIR = Path(BASE_DIR)
 
 STATIC_URL = '/static/'
-
-# Add this for collectstatic to work:
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-print(f"BASE_DIR type: {type(BASE_DIR)}; value: {BASE_DIR}")
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -133,19 +119,89 @@ print(f"BASE_DIR type: {type(BASE_DIR)}; value: {BASE_DIR}")
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-BASE_URL = "http://127.0.0.1:8000"  # Replace with your actual domain in production
+BASE_URL = "http://127.0.0.1:8080"  # Updated to match current server port
 
 import os
 
-GOOGLE_VISION_KEY_PATH = os.path.join(BASE_DIR, "google_vision_key.json")
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_VISION_KEY_PATH
-# LOGIN_REDIRECT_URL = 'student/dashboard'
+# Google Vision API - Disabled to prevent DefaultCredentialsError
+# GOOGLE_VISION_KEY_PATH = os.path.join(BASE_DIR, "google_vision_key.json")
+# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GOOGLE_VISION_KEY_PATH
+# Authentication settings
 AUTH_USER_MODEL = 'authentication.User'
+LOGIN_URL = 'signin'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
 
-LOGIN_URL = '/signin'
-port = int(os.environ.get("PORT", 8000))
+# Session settings
+SESSION_TIMEOUT = 1800  # 30 minutes in seconds
+SESSION_COOKIE_AGE = 1800  # 30 minutes
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_SECURE = not DEBUG  # Use secure cookies in production
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
 
-import os
+# Security settings
+PREVENT_CONCURRENT_SESSIONS = False  # Set to True to prevent multiple logins
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
-ALLOWED_HOSTS = ['.onrender.com', 'your-custom-domain.com']
+# Password validation (enhanced)
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        }
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+# Logging configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs' / 'bustrack.log',
+            'formatter': 'verbose',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'root': {
+        'handlers': ['console', 'file'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'authentication': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}

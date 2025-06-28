@@ -5,14 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BUSTRACK - School Bus Tracking System</title>
-    
-    <!-- Google Fonts -->
+    <title>BusTrack - School Bus Tracking System</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -20,66 +15,242 @@
             box-sizing: border-box;
         }
 
-        :root {
-            --primary-color: #2563eb;
-            --primary-light: #3b82f6;
-            --primary-dark: #1e40af;
-            --accent-color: #f59e0b;
-            --success-color: #10b981;
-            --background-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --text-light: #ffffff;
-            --text-dark: #1e293b;
-            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            --border-radius: 1rem;
-        }
-
         body {
             font-family: 'Inter', sans-serif;
-            background: var(--background-gradient);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            position: relative;
             overflow-x: hidden;
         }
 
-        /* Animated Background Elements */
-        body::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: float 20s infinite linear;
-            z-index: -1;
-        }
-
-        @keyframes float {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            100% { transform: translate(-50px, -50px) rotate(360deg); }
-        }
-
-        /* Main Container */
-        .hero-container {
-            text-align: center;
-            max-width: 600px;
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
             width: 100%;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            border-radius: var(--border-radius);
-            padding: 3rem 2rem;
-            box-shadow: var(--shadow-lg);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            animation: slideUp 0.8s ease-out;
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
         }
 
-        @keyframes slideUp {
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+        .btn-nav {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white !important;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+
+        .btn-nav:hover {
+            background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            padding: 2rem;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #e8f0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            line-height: 1.6;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease-out 0.4s both;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: transparent;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 2rem;
+            background: white;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            text-align: center;
+            padding: 2rem;
+            border-radius: 20px;
+            background: #f8f9fa;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .feature-description {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Bus Animation */
+        .bus-animation {
+            position: absolute;
+            top: 50%;
+            right: -100px;
+            transform: translateY(-50%);
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.1);
+            animation: moveBus 20s linear infinite;
+        }
+
+        @keyframes moveBus {
+            0% { right: -100px; }
+            100% { right: 100vw; }
+        }
+
+        @keyframes fadeInUp {
             from {
                 opacity: 0;
                 transform: translateY(30px);
@@ -90,346 +261,228 @@
             }
         }
 
-        /* Logo and Title */
-        .logo-section {
-            margin-bottom: 2rem;
-        }
-
-        .logo-icon {
-            font-size: 4rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-10px);
-            }
-            60% {
-                transform: translateY(-5px);
-            }
-        }
-
-        .main-title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.02em;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            color: #64748b;
-            font-weight: 400;
-            margin-bottom: 2rem;
-        }
-
-        /* Bus Image */
-        .bus-image {
-            width: 100%;
-            max-width: 250px;
-            height: auto;
-            margin: 2rem 0;
-            filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.15));
-            animation: float-bus 3s ease-in-out infinite;
-        }
-
-        @keyframes float-bus {
-            0%, 100% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-        }
-
-        /* Features Section */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-
-        .feature {
-            padding: 1rem;
-            background: rgba(37, 99, 235, 0.05);
-            border-radius: 0.75rem;
-            border: 1px solid rgba(37, 99, 235, 0.1);
-        }
-
-        .feature-icon {
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            margin-bottom: 0.5rem;
-        }
-
-        .feature-title {
-            font-size: 0.875rem;
-            font-weight: 600;
-            color: var(--text-dark);
-            margin-bottom: 0.25rem;
-        }
-
-        .feature-text {
-            font-size: 0.75rem;
-            color: #64748b;
-        }
-
-        /* Button Container */
-        .btn-container {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            margin-top: 2rem;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 0.75rem;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            min-width: 140px;
-            justify-content: center;
-        }
-
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .btn:hover::before {
-            left: 100%;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
-            color: var(--text-light);
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.9);
-            color: var(--primary-color);
-            border: 2px solid var(--primary-color);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn-secondary:hover {
-            background: var(--primary-color);
-            color: var(--text-light);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.3);
-        }
-
         /* Responsive Design */
         @media (max-width: 768px) {
-            .hero-container {
-                padding: 2rem 1.5rem;
-                margin: 1rem;
+            .navbar {
+                padding: 1rem;
             }
 
-            .main-title {
+            .nav-links {
+                gap: 10px;
+            }
+
+            .hero-title {
                 font-size: 2.5rem;
             }
 
-            .subtitle {
-                font-size: 1rem;
+            .hero-subtitle {
+                font-size: 1.1rem;
             }
 
-            .btn-container {
+            .hero-buttons {
                 flex-direction: column;
                 align-items: center;
             }
 
             .btn {
                 width: 100%;
-                max-width: 250px;
+                max-width: 300px;
+                justify-content: center;
             }
 
             .features {
+                padding: 50px 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .features-grid {
                 grid-template-columns: 1fr;
+                gap: 2rem;
             }
         }
 
         @media (max-width: 480px) {
-            .main-title {
+            .hero {
+                padding: 1rem;
+            }
+
+            .hero-title {
                 font-size: 2rem;
             }
 
-            .hero-container {
-                padding: 1.5rem 1rem;
+            .nav-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .navbar {
+                position: relative;
+                padding: 1rem;
+            }
+
+            .hero {
+                padding-top: 2rem;
             }
         }
 
-        /* Loading Animation */
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--background-gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 1;
-            transition: opacity 0.5s ease;
+        /* Accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
 
-        .loading-overlay.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        /* Focus styles for accessibility */
+        .btn:focus,
+        .nav-links a:focus {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
         }
     </style>
 </head>
 <body>
-    <!-- Loading Overlay -->
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="spinner"></div>
-    </div>
-
-    <div class="hero-container">
-        <div class="logo-section">
-            <div class="logo-icon">
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo">
                 <i class="fas fa-bus"></i>
+                BusTrack
             </div>
-            <h1 class="main-title">BUSTRACK</h1>
-            <p class="subtitle">Smart School Bus Tracking System</p>
-        </div>
-
-        <img src="/image/bus_4931382.png" alt="School Bus" class="bus-image">
-
-        <div class="features">
-            <div class="feature">
-                <div class="feature-icon">
-                    <i class="fas fa-map-marker-alt"></i>
-                </div>
-                <div class="feature-title">Real-Time Tracking</div>
-                <div class="feature-text">Live bus location updates</div>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <div class="feature-title">Safety First</div>
-                <div class="feature-text">Enhanced security features</div>
-            </div>
-            <div class="feature">
-                <div class="feature-icon">
-                    <i class="fas fa-mobile-alt"></i>
-                </div>
-                <div class="feature-title">Mobile Friendly</div>
-                <div class="feature-text">Access from anywhere</div>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="{% url 'admin_signup' %}" style="color: #dc3545; font-weight: 600;">Admin</a>
+                <a href="{% url 'signin' %}" class="btn-nav">Sign In</a>
             </div>
         </div>
+    </nav>
 
-        <div class="btn-container">
-            <a href="{% url 'signup' %}" class="btn btn-primary">
-                <i class="fas fa-user-plus"></i>
-                Sign Up
-            </a>
-            <a href="{% url 'signin' %}" class="btn btn-secondary">
-                <i class="fas fa-sign-in-alt"></i>
-                Sign In
-            </a>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="bus-animation">
+            <i class="fas fa-bus"></i>
         </div>
-    </div>
+        <div class="hero-content">
+            <h1 class="hero-title">BusTrack</h1>
+            <p class="hero-subtitle">
+                Modern school bus tracking system that keeps students, parents, and drivers connected.
+                Track your bus in real-time, manage payments, and ensure safe transportation.
+            </p>
+            <div class="hero-buttons">
+                <a href="{% url 'signup' %}" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i>
+                    Get Started
+                </a>
+                <a href="{% url 'signin' %}" class="btn btn-secondary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="features-container">
+            <h2 class="section-title">Why Choose BusTrack?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Real-Time Tracking</h3>
+                    <p class="feature-description">
+                        Track your school bus location in real-time with GPS precision.
+                        Know exactly when your bus will arrive.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <h3 class="feature-title">Digital Payments</h3>
+                    <p class="feature-description">
+                        Upload payment receipts and get QR codes for easy bus access.
+                        No more paper tickets or cash handling.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="feature-title">Multi-Role Support</h3>
+                    <p class="feature-description">
+                        Separate dashboards for students, parents, drivers, and administrators.
+                        Everyone gets the right information.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Secure & Safe</h3>
+                    <p class="feature-description">
+                        Advanced security features protect your data and ensure safe
+                        transportation for all students.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3 class="feature-title">Smart Notifications</h3>
+                    <p class="feature-description">
+                        Get instant notifications about bus arrivals, delays, and
+                        important updates directly to your device.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Mobile Friendly</h3>
+                    <p class="feature-description">
+                        Fully responsive design works perfectly on all devices.
+                        Access from anywhere, anytime.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <script>
-        // Hide loading overlay after page loads
-        window.addEventListener('load', function() {
-            const loadingOverlay = document.getElementById('loadingOverlay');
-            setTimeout(() => {
-                loadingOverlay.classList.add('hidden');
-            }, 500);
-        });
-
-        // Add click effects to buttons
-        document.querySelectorAll('.btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                // Create ripple effect
-                const ripple = document.createElement('span');
-                const rect = this.getBoundingClientRect();
-                const size = Math.max(rect.width, rect.height);
-                const x = e.clientX - rect.left - size / 2;
-                const y = e.clientY - rect.top - size / 2;
-                
-                ripple.style.cssText = `
-                    position: absolute;
-                    width: ${size}px;
-                    height: ${size}px;
-                    left: ${x}px;
-                    top: ${y}px;
-                    background: rgba(255, 255, 255, 0.3);
-                    border-radius: 50%;
-                    transform: scale(0);
-                    animation: ripple 0.6s ease-out;
-                    pointer-events: none;
-                `;
-                
-                this.appendChild(ripple);
-                
-                setTimeout(() => {
-                    ripple.remove();
-                }, 600);
+        // Add smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
             });
         });
 
-        // Add ripple animation
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes ripple {
-                to {
-                    transform: scale(2);
-                    opacity: 0;
-                }
+        // Add scroll effect to navbar
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
             }
-        `;
-        document.head.appendChild(style);
+        });
     </script>
 </body>
 </html>

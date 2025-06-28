@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Registration - BusTrack</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/auth-styles.css' %}">
+    <style>
+        body {
+            background: linear-gradient(135deg, #dc3545 0%, #6f42c1 100%);
+        }
+
+        .admin-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 550px;
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .admin-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #dc3545, #6f42c1);
+        }
+
+        .logo {
+            color: #dc3545;
+        }
+
+        .security-notice {
+            background: rgba(220, 53, 69, 0.1);
+            border-left: 4px solid #dc3545;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+        }
+
+        .security-notice h4 {
+            color: #dc3545;
+            font-size: 1rem;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .security-notice p {
+            color: #333;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        .admin-code-info {
+            background: rgba(111, 66, 193, 0.1);
+            border-left: 4px solid #6f42c1;
+            padding: 12px;
+            margin-top: 8px;
+            border-radius: 6px;
+        }
+
+        .admin-code-info p {
+            color: #333;
+            font-size: 0.8rem;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .strength-requirements {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 5px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .strength-requirements ul {
+            margin: 5px 0 0 15px;
+            padding: 0;
+        }
+
+        .strength-requirements li {
+            margin-bottom: 2px;
+        }
+
+        .btn-admin {
+            background: linear-gradient(135deg, #dc3545 0%, #6f42c1 100%);
+        }
+
+        .btn-admin:hover {
+            background: linear-gradient(135deg, #c82333 0%, #5a2d91 100%);
+            box-shadow: 0 10px 25px rgba(220, 53, 69, 0.4);
+        }
+
+        .form-links a {
+            color: #dc3545;
+        }
+
+        .form-links a:hover {
+            color: #6f42c1;
+        }
+
+        @media (max-width: 600px) {
+            .admin-container {
+                padding: 30px 25px;
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <div class="logo-section">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h1 class="app-name">Admin Registration</h1>
+            <p class="app-subtitle">BusTrack Administrative Access</p>
+        </div>
+
+        <div class="security-notice">
+            <h4>
+                <i class="fas fa-exclamation-triangle"></i>
+                Restricted Access
+            </h4>
+            <p>
+                This registration is for authorized administrators only. 
+                You must have a valid admin registration code to proceed.
+            </p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="{% if message.tags == 'error' %}error-message{% else %}success-message{% endif %}">
+                    <i class="fas fa-{% if message.tags == 'error' %}exclamation-circle{% else %}check-circle{% endif %}"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if show_logout_option %}
+            <div class="alert alert-info" style="background: rgba(220, 53, 69, 0.1); border-left: 4px solid #dc3545; padding: 15px; margin-bottom: 20px; border-radius: 8px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                    <i class="fas fa-info-circle" style="color: #dc3545;"></i>
+                    <strong style="color: #dc3545;">Already Logged In</strong>
+                </div>
+                <p style="margin: 0; color: #333; font-size: 0.9rem; line-height: 1.4;">
+                    You are currently logged in as <strong>{{ current_user.get_full_name|default:current_user.username }}</strong> ({{ current_role }}).
+                    To create an admin account, you need to logout first.
+                </p>
+            </div>
+
+            <form method="post" style="margin-bottom: 20px;">
+                {% csrf_token %}
+                <input type="hidden" name="logout_and_signup" value="1">
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 10px;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout and Create Admin Account
+                </button>
+            </form>
+
+            <div style="text-align: center;">
+                <a href="{% if current_user.role == 'student' %}{% url 'student_dashboard' %}{% elif current_user.role == 'driver' %}{% url 'driver_dashboard' %}{% elif current_user.role == 'parent' %}{% url 'parent_dashboard' %}{% elif current_user.role == 'admin' %}{% url 'admin_dashboard' %}{% else %}{% url 'home' %}{% endif %}" class="btn btn-secondary" style="width: 100%;">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+        {% else %}
+            <form method="post" id="adminSignupForm" novalidate>
+            {% csrf_token %}
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}">First Name</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        {{ form.first_name }}
+                    </div>
+                    {% if form.first_name.errors %}
+                        <div class="error-message">
+                            <i class="fas fa-exclamation-circle"></i>
+                            {{ form.first_name.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        {{ form.last_name }}
+                    </div>
+                    {% if form.last_name.errors %}
+                        <div class="error-message">
+                            <i class="fas fa-exclamation-circle"></i>
+                            {{ form.last_name.errors.0 }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Admin Username</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-user-shield input-icon"></i>
+                    {{ form.username }}
+                </div>
+                {% if form.username.errors %}
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {{ form.username.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Email Address</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope input-icon"></i>
+                    {{ form.email }}
+                </div>
+                {% if form.email.errors %}
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {{ form.email.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.phone_number.id_for_label }}">Phone Number</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-phone input-icon"></i>
+                    {{ form.phone_number }}
+                </div>
+                {% if form.phone_number.errors %}
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {{ form.phone_number.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.admin_code.id_for_label }}">Admin Registration Code</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-key input-icon"></i>
+                    {{ form.admin_code }}
+                </div>
+                <div class="admin-code-info">
+                    <p>
+                        <i class="fas fa-info-circle" style="color: #6f42c1; margin-right: 5px;"></i>
+                        Contact your system administrator to obtain the registration code.
+                    </p>
+                </div>
+                {% if form.admin_code.errors %}
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {{ form.admin_code.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">Password</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock input-icon"></i>
+                    {{ form.password1 }}
+                </div>
+                <div class="strength-requirements">
+                    <strong>Admin Password Requirements:</strong>
+                    <ul>
+                        <li>At least 10 characters long</li>
+                        <li>Contains uppercase and lowercase letters</li>
+                        <li>Contains at least one number</li>
+                        <li>Contains at least one special character</li>
+                    </ul>
+                </div>
+                <div class="password-strength" id="passwordStrength" style="display: none;">
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strengthFill"></div>
+                    </div>
+                    <span id="strengthText">Password strength</span>
+                </div>
+                {% if form.password1.errors %}
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {{ form.password1.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock input-icon"></i>
+                    {{ form.password2 }}
+                </div>
+                {% if form.password2.errors %}
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        {{ form.password2.errors.0 }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="submit-btn btn-admin" id="submitBtn">
+                <span class="loading-spinner" id="loadingSpinner"></span>
+                <span id="btnText">Create Admin Account</span>
+            </button>
+        </form>
+
+        <div class="form-links">
+            <p>Already have an account? <a href="{% url 'signin' %}">Sign In</a></p>
+            <p>Regular user? <a href="{% url 'signup' %}">User Registration</a></p>
+        </div>
+        {% endif %}
+    </div>
+
+    <script src="{% static 'js/form-validation.js' %}" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('adminSignupForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            const btnText = document.getElementById('btnText');
+            const passwordField = document.getElementById('id_password1');
+
+            // Enhanced password strength for admin
+            if (passwordField) {
+                passwordField.addEventListener('input', function() {
+                    checkAdminPasswordStrength(this.value);
+                });
+            }
+
+            function checkAdminPasswordStrength(password) {
+                const strengthIndicator = document.getElementById('passwordStrength');
+                const strengthFill = document.getElementById('strengthFill');
+                const strengthText = document.getElementById('strengthText');
+
+                if (!strengthIndicator) return;
+
+                if (password.length === 0) {
+                    strengthIndicator.style.display = 'none';
+                    return;
+                }
+
+                strengthIndicator.style.display = 'block';
+
+                let score = 0;
+                let feedback = [];
+
+                // Length check (stricter for admin)
+                if (password.length >= 10) score++;
+                else feedback.push('at least 10 characters');
+
+                // Uppercase check
+                if (/[A-Z]/.test(password)) score++;
+                else feedback.push('an uppercase letter');
+
+                // Lowercase check
+                if (/[a-z]/.test(password)) score++;
+                else feedback.push('a lowercase letter');
+
+                // Number check
+                if (/\d/.test(password)) score++;
+                else feedback.push('a number');
+
+                // Special character check (required for admin)
+                if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score++;
+                else feedback.push('a special character');
+
+                // Update strength indicator
+                strengthFill.className = 'strength-fill';
+                if (score <= 2) {
+                    strengthFill.classList.add('strength-weak');
+                    strengthText.textContent = 'Weak - Add ' + feedback.slice(0, 2).join(' and ');
+                } else if (score <= 3) {
+                    strengthFill.classList.add('strength-fair');
+                    strengthText.textContent = 'Fair - Add ' + feedback.slice(0, 1).join(' and ');
+                } else if (score <= 4) {
+                    strengthFill.classList.add('strength-good');
+                    strengthText.textContent = 'Good - Almost there!';
+                } else {
+                    strengthFill.classList.add('strength-strong');
+                    strengthText.textContent = 'Strong admin password!';
+                }
+            }
+
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                submitBtn.disabled = true;
+                loadingSpinner.style.display = 'inline-block';
+                btnText.textContent = 'Creating Admin Account...';
+            });
+        });
+    </script>
+</body>
+</html>

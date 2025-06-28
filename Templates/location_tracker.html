@@ -1,378 +1,390 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard - School Bus Tracking</title>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
-      *,
-      *::before,
-      *::after {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #425299 100%);
-        min-height: 100vh;
-      }
-      .header {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        padding: 1rem 2rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        color: white;
-      }
-      .header h1 {
-        font-size: 1.8rem;
-        font-weight: 300;
-      }
-      .status-indicator {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 8px 16px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 20px;
-        backdrop-filter: blur(5px);
-      }
-      .status-dot {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background: #4caf50;
-        animation: pulse 2s infinite;
-      }
-      @keyframes pulse {
-        0% {
-          opacity: 1;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        50% {
-          opacity: 0.5;
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
-        100% {
-          opacity: 1;
+        
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
-      }
-      .dashboard-container {
-        padding: 2rem;
-        max-width: 1400px;
-        margin: 0 auto;
-      }
-      .dashboard-grid {
-        display: grid;
-        grid-template-columns: 350px 1fr;
-        gap: 2rem;
-        height: calc(100vh - 120px);
-      }
-      .sidebar {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 15px;
-        padding: 1.5rem;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        overflow-y: auto;
-      }
-      .sidebar h3 {
-        color: #333;
-        margin-bottom: 1rem;
-        font-size: 1.4rem;
-      }
-      .driver-list {
-        max-height: 300px;
-        overflow-y: auto;
-        margin-bottom: 2rem;
-      }
-      .driver-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 12px;
-        margin-bottom: 8px;
-        background: rgba(255, 255, 255, 0.8);
-        border-radius: 10px;
-        border-left: 4px solid #4caf50;
-        transition: transform 0.2s;
-      }
-      .driver-item.offline {
-        border-left-color: #f44336;
-        opacity: 0.6;
-      }
-      .driver-info {
-        flex: 1;
-      }
-      .driver-name {
-        font-weight: 600;
-        color: #333;
-      }
-      .driver-status {
-        font-size: 0.8rem;
-        color: #666;
-        margin-top: 2px;
-      }
-      .online-indicator,
-      .offline-indicator {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-      }
-      .online-indicator {
-        background: #4caf50;
-      }
-      .offline-indicator {
-        background: #f44336;
-      }
-      .map-container {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 15px;
-        padding: 1.5rem;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-      }
-      #map {
-        height: calc(100vh - 220px);
-        width: 100%;
-        border-radius: 10px;
-      }
-      .map-legend {
-        display: flex;
-        gap: 2rem;
-        margin-top: 1rem;
-        font-size: 0.9rem;
-        color: #666;
-      }
-      .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-      .legend-dot {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        border: 2px solid white;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      }
-      .logout-btn {
-        background: rgba(244, 67, 54, 0.8);
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 20px;
-        cursor: pointer;
-      }
-      .logout-btn:hover {
-        background: rgba(244, 67, 54, 1);
-      }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 300;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .dashboard-container {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .card h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+        
+        .map-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        #map {
+            height: 500px;
+            width: 100%;
+            border-radius: 10px;
+        }
+        
+        .location-info {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .driver-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        
+        .driver-status.online {
+            color: #4CAF50;
+        }
+        
+        .driver-status.offline {
+            color: #f44336;
+        }
+        
+        .refresh-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: transform 0.2s;
+            margin-top: 1rem;
+        }
+        
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .logout-btn {
+            background: rgba(244, 67, 54, 0.8);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(244, 67, 54, 1);
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="header">
-      <h1>👤 Student Dashboard</h1>
-      <div style="display: flex; align-items: center; gap: 2rem">
-        <div class="status-indicator">
-          <div class="status-dot"></div>
-          <span>Active</span>
+        <h1>Student Dashboard</h1>
+        <div style="display: flex; align-items: center; gap: 2rem;">
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span>Online</span>
+            </div>
+            <span>Welcome, {{ user.first_name|default:user.username }}!</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
-        <span>Welcome, {{ user.first_name|default:user.username }}!</span>
-        <button class="logout-btn" onclick="logout()">Logout</button>
-      </div>
     </div>
+
     <div class="dashboard-container">
-      <div class="dashboard-grid">
-        <div class="sidebar">
-          <h3>🚌 Drivers Nearby</h3>
-          <div class="driver-list" id="driver-list">
-  {% if not drivers %}
-    <p style="text-align: center; color: #666; padding: 2rem;">
-      Loading drivers...
-    </p>
-  {% else %}
-    {% for driver in drivers %}
-      <div class="driver-item {% if not driver.latitude %}offline{% endif %}">
-        <div class="driver-info">
-          <div class="driver-name">{{ driver.user.username }} </div>
-          <div class="driver-status">
-            {% if driver.latitude %}
-              Last seen: {{ driver.last_updated|date:"H:i:s" }}
-            {% else %}
-              Offline
-            {% endif %}
-          </div>
+        <div class="info-cards">
+            <div class="card">
+                <h3>🚌 Bus Information</h3>
+                <div id="bus-info">
+                    <p>Looking for your bus driver...</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>📍 Your Location</h3>
+                <div id="student-location">
+                    <p>Getting your location...</p>
+                </div>
+                <button class="refresh-btn" onclick="updateLocation()">Update Location</button>
+            </div>
         </div>
-        <div class="{% if driver.latitude %}online-indicator{% else %}offline-indicator{% endif %}"></div>
-      </div>
-    {% endfor %}
-  {% endif %}
-</div>
-        </div>
+
         <div class="map-container">
-          <h3>🗺️ Real-time Bus Tracking</h3>
-          <div id="map"></div>
-          <div class="map-legend">
-            <div class="legend-item">
-              <div class="legend-dot" style="background: #ff9800"></div>
-              <span>Your Location</span>
+            <h3>🗺️ Real-time Tracking</h3>
+            <div id="map"></div>
+            <div class="location-info">
+                <p>🔵 Your location | 🚌 Bus driver location</p>
             </div>
-            <div class="legend-item">
-              <div class="legend-dot" style="background: #667eea"></div>
-              <span>Drivers Online</span>
-            </div>
-            <div class="legend-item">
-              <div class="legend-dot" style="background: #f44336"></div>
-              <span>Drivers Offline</span>
-            </div>
-          </div>
         </div>
-      </div>
     </div>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-      let map,
-        studentMarker,
-        driverMarkers = [];
-      let studentLocation = null;
-
-      function initMap() {
-        map = L.map("map").setView([0, 0], 13);
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-          attribution: "© OpenStreetMap contributors",
-        }).addTo(map);
-      }
-
-      function getStudentLocation() {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(
-            (pos) => {
-              studentLocation = {
-                lat: pos.coords.latitude,
-                lng: pos.coords.longitude,
-              };
-              updateStudentMarker();
-              map.setView([studentLocation.lat, studentLocation.lng], 13);
-            },
-            (err) => {
-              console.error("Location error", err);
-            }
-          );
-        }
-      }
-
-      function updateStudentMarker() {
-        if (studentMarker) map.removeLayer(studentMarker);
-        if (studentLocation) {
-          studentMarker = L.marker([studentLocation.lat, studentLocation.lng], {
-            icon: L.divIcon({
-              className: "custom-marker",
-              html: '<div style="background: #FF9800; width: 24px; height: 24px; border-radius: 50%; border:4px solid white; display:flex;align-items:center;justify-content:center;">📍</div>',
-              iconSize: [24, 24],
-              iconAnchor: [12, 12],
-            }),
-          }).addTo(map);
-          studentMarker.bindPopup("You are here");
-        }
-      }
-
-      function getDriverLocations() {
-        fetch('{% url "student_location" %}')
-          .then((res) => res.json())
-          .then((data) => {
-            updateDriverList(data.driver_location);
-            updateDriverMarkers(data.driver_location);
-          })
-          .catch((err) => console.error(err));
-      }
-
-      function updateDriverList(drivers) {
-        const list = document.getElementById("driver-list");
-        if (!drivers.length) {
-          list.innerHTML =
-            '<p style="text-align:center;color:#666;padding:2rem;">No drivers available</p>';
-          return;
-        }
-        list.innerHTML = drivers
-          .map(
-            (d) => `
-                <div class="driver-item ${d.latitude ? "" : "offline"}">
-                    <div class="driver-info">
-                        <div class="driver-name">${d.first_name} ${
-              d.last_name
-            }</div>
-                        <div class="driver-status">${
-                          d.latitude
-                            ? `Last seen: ${new Date(
-                                d.last_updated
-                              ).toLocaleTimeString()}`
-                            : "Offline"
-                        }</div>
-                    </div>
-                    <div class="${
-                      d.latitude ? "online-indicator" : "offline-indicator"
-                    }"></div>
-                </div>
-            `
-          )
-          .join("");
-      }
-
-      function updateDriverMarkers(drivers) {
-        driverMarkers.forEach((m) => map.removeLayer(m));
-        driverMarkers = [];
-        drivers
-          .filter((d) => d.latitude && d.longitude)
-          .forEach((d) => {
-            const m = L.marker([d.latitude, d.longitude], {
-              icon: L.divIcon({
-                className: "custom-marker",
-                html: '<div style="background:#667eea;width:20px;height:20px;border-radius:50%;border:3px solid white;">🚍</div>',
-                iconSize: [20, 20],
-                iconAnchor: [10, 10],
-              }),
+        let map;
+        let studentMarker;
+        let driverMarker;
+        let studentLocation = null;
+        
+        // Initialize map
+        function initMap() {
+            map = L.map('map').setView([0, 0], 13);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
             }).addTo(map);
-            m.bindPopup(
-              `<strong>${d.first_name} ${
-                d.last_name
-              }</strong><br>Bus Driver<br><small>Updated: ${new Date(
-                d.last_updated
-              ).toLocaleTimeString()}</small>`
-            );
-            driverMarkers.push(m);
-          });
-      }
-
-      function logout() {
-        fetch('{% url "set_offline" %}', {
-          method: "POST",
-          headers: { "X-CSRFToken": getCookie("csrftoken") },
-        }).finally(() => (window.location.href = '{% url "signin" %}'));
-      }
-
-      function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie) {
-          document.cookie.split(";").forEach((cookie) => {
-            const [k, v] = cookie.trim().split("=");
-            if (k === name) cookieValue = decodeURIComponent(v);
-          });
         }
-        return cookieValue;
-      }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        initMap();
-        getStudentLocation();
-        getDriverLocations();
-        setInterval(getDriverLocations, 5000);
-      });
-    </script>
-  </body>
-</html>
+        
+        // Get user's current location
+        function getUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        studentLocation = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        
+                        updateStudentLocationDisplay();
+                        updateLocationOnServer();
+                        updateMap();
+                    },
+                    function(error) {
+                        console.error('Error getting location:', error);
+                        document.getElementById('student-location').innerHTML = 
+                            '<p style="color: #f44336;">Unable to get your location</p>';
+                    }
+                );
+            } else {
+                document.getElementById('student-location').innerHTML = 
+                    '<p style="color: #f44336;">Geolocation not supported</p>';
+            }
+        }
+        
+        // Update student location display
+        function updateStudentLocationDisplay() {
+            if (studentLocation) {
+                document.getElementById('student-location').innerHTML = `
+                    <p><strong>Latitude:</strong> ${studentLocation.lat.toFixed(6)}</p>
+                    <p><strong>Longitude:</strong> ${studentLocation.lng.toFixed(6)}</p>
+                    <p class="location-info">Last updated: ${new Date().toLocaleTimeString()}</p>
+                `;
+            }
+        }
+        
+        // Send location to server
+        function updateLocationOnServer() {
+            if (studentLocation) {
+                fetch('/api/update-location/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify(studentLocation)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        console.log('Location updated successfully');
+                    }
+                })
+                .catch(error => console.error('Error updating location:', error));
+            }
+        }
+        
+        // Get all locations from server
+        function getLocations() {
+            fetch('/api/get-locations/')
+                .then(response => response.json())
+                .then(data => {
+                    updateDriverInfo(data.locations);
+                    updateMapMarkers(data.locations);
+                })
+                .catch(error => console.error('Error getting locations:', error));
+        }
+        
+        // Update driver information
+        function updateDriverInfo(locations) {
+            const driverLocation = locations.find(loc => loc.role === 'driver');
+            const busInfoDiv = document.getElementById('bus-info');
+            
+            if (driverLocation) {
+                busInfoDiv.innerHTML = `
+                    <p><strong>Driver:</strong> ${driverLocation.first_name} ${driverLocation.last_name}</p>
+                    <div class="driver-status online">
+                        <div class="status-dot"></div>
+                        <span>Driver Online</span>
+                    </div>
+                    <p class="location-info">Last seen: ${new Date(driverLocation.last_updated).toLocaleString()}</p>
+                `;
+            } else {
+                busInfoDiv.innerHTML = `
+                    <div class="driver-status offline">
+                        <div class="status-dot" style="background: #f44336;"></div>
+                        <span>Driver Offline</span>
+                    </div>
+                `;
+            }
+        }
+        
+        // Update map markers
+        function updateMapMarkers(locations) {
+            // Clear existing markers
+            if (studentMarker) map.removeLayer(studentMarker);
+            if (driverMarker) map.removeLayer(driverMarker);
+            
+            // Add student marker
+            if (studentLocation) {
+                studentMarker = L.marker([studentLocation.lat, studentLocation.lng], {
+                    icon: L.divIcon({
+                        className: 'custom-marker',
+                        html: '<div style="background: #2196F3; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3);"></div>',
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
+                    })
+                }).addTo(map);
+                
+                studentMarker.bindPopup('Your Location');
+                map.setView([studentLocation.lat, studentLocation.lng], 13);
+            }
+            
+            // Add driver marker
+            const driverLocation = locations.find(loc => loc.role === 'driver');
+            if (driverLocation && driverLocation.latitude && driverLocation.longitude) {
+                driverMarker = L.marker([driverLocation.latitude, driverLocation.longitude], {
+                    icon: L.divIcon({
+                        className: 'custom-marker',
+                        html: '<div style="background: #FF9800; width: 25px; height: 25px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px;">🚌</div>',
+                        iconSize: [25, 25],
+                        iconAnchor: [12, 12]
+                    })
+                }).addTo(map);
+                
+                driverMarker.bindPopup(`Driver: ${driverLocation.first_name} ${driverLocation.last_name}`);
+            }
+        }
+        
+        // Update map
+        function updateMap() {
+            getLocations();
+        }
+        
+        // Manual location update
+        function updateLocation() {
+            getUserLocation();
+        }
+        
+        // Logout function
+        function logout() {
+            // Set user offline before logout
+            fetch('/api/set-offline/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            }).finally(() => {
+                window.location.href = '/signin/';
+            });
+        }
+        
+        // Get CSRF token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', function() {
+            initMap();
+            getUserLocation();
+            
+            // Update locations every 10 seconds
+            setInterval(getLocations, 10000);
+            
+            // Update own location every 5 seconds
+            setInterval(updateLocation, 5000);});

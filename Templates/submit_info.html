@@ -2,556 +2,100 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Submit Info</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit Information</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
+        body {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f7f8;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            height: 100vh;
         }
 
         .form-container {
-            width: 100%;
-            max-width: 600px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 24px;
-            padding: 48px 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
-            animation: slideUp 0.6s ease-out;
-        }
-
-        .form-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-        }
-
-        .form-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .form-icon {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 16px;
-            margin: 0 auto 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-            font-weight: 700;
-        }
-
-        h1 {
-            font-size: 2.25rem;
-            margin-bottom: 8px;
-            font-weight: 700;
-            color: #1a202c;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .subtitle {
-            color: #64748b;
-            font-size: 16px;
-            line-height: 1.5;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: #e2e8f0;
-            border-radius: 3px;
-            margin-bottom: 32px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            width: 0%;
-            transition: width 0.3s ease;
-            border-radius: 3px;
-        }
-
-        .form-group {
-            margin-bottom: 24px;
-            position: relative;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #374151;
-            font-weight: 600;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .input-container {
-            position: relative;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 16px 20px;
-            border-radius: 12px;
-            border: 2px solid #e2e8f0;
-            font-size: 16px;
             background: #ffffff;
-            color: #1a202c;
-            transition: all 0.3s ease;
-            outline: none;
-            font-family: inherit;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-            transform: translateY(-1px);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .form-group select {
-            cursor: pointer;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-            background-position: right 16px center;
-            background-repeat: no-repeat;
-            background-size: 16px;
-            padding-right: 50px;
-        }
-
-        /* File input styling */
-        .file-input-wrapper {
-            position: relative;
-            display: inline-block;
-            width: 100%;
-        }
-
-        .file-input-wrapper input[type="file"] {
-            position: absolute;
-            opacity: 0;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-        }
-
-        .file-input-display {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 16px 20px;
-            border: 2px dashed #e2e8f0;
+            padding: 30px;
             border-radius: 12px;
-            background: #f8fafc;
-            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .form-container h1 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-container form p {
+            margin-bottom: 15px;
+        }
+
+        .form-container input[type="text"],
+        .form-container input[type="email"],
+        .form-container input[type="file"],
+        .form-container select,
+        .form-container textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .form-container button {
+            background-color: #3b5998;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
             cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
         }
 
-        .file-input-display:hover {
-            border-color: #667eea;
-            background: #f1f5f9;
-        }
-
-        .file-input-display.has-file {
-            border-color: #10b981;
-            background: #f0fdf4;
-            border-style: solid;
-        }
-
-        .file-icon {
-            font-size: 24px;
-        }
-
-        .file-text {
-            flex: 1;
-        }
-
-        .file-name {
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        .file-size {
-            font-size: 12px;
-            color: #64748b;
-        }
-
-        .file-placeholder {
-            color: #64748b;
+        .form-container button:hover {
+            background-color: #2c3e70;
         }
 
         .error-message {
-            background: #fee2e2;
-            border: 1px solid #fecaca;
-            color: #dc2626;
-            padding: 16px 20px;
-            border-radius: 12px;
-            margin-bottom: 24px;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            color: red;
+            margin-bottom: 15px;
+            text-align: center;
         }
 
-        .error-message::before {
-            content: '⚠️';
-            font-size: 18px;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 12px;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .submit-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .submit-btn:hover::before {
-            left: 100%;
-        }
-
-        .submit-btn:active {
-            transform: translateY(0);
-        }
-
-        .submit-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .submit-btn.loading {
-            opacity: 0.8;
-        }
-
-        .submit-btn.loading::after {
-            content: '';
-            width: 16px;
-            height: 16px;
-            border: 2px solid #ffffff;
-            border-top: 2px solid transparent;
-            border-radius: 50%;
-            display: inline-block;
-            animation: spin 1s linear infinite;
-            margin-left: 8px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Field validation styles */
-        .form-group.valid input,
-        .form-group.valid select,
-        .form-group.valid textarea {
-            border-color: #10b981;
-        }
-
-        .form-group.invalid input,
-        .form-group.invalid select,
-        .form-group.invalid textarea {
-            border-color: #ef4444;
-        }
-
-        .validation-icon {
-            position: absolute;
-            right: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 16px;
-            z-index: 1;
-        }
-
-        .validation-icon.valid {
-            color: #10b981;
-        }
-
-        .validation-icon.invalid {
-            color: #ef4444;
-        }
-
-        /* Responsive design */
-        @media (max-width: 640px) {
+        @media (max-width: 600px) {
             .form-container {
-                padding: 32px 24px;
-                margin: 16px;
+                padding: 20px;
             }
-
-            h1 {
-                font-size: 1.875rem;
-            }
-
-            .form-group {
-                margin-bottom: 20px;
-            }
-        }
-
-        /* Success animation */
-        @keyframes success {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .form-container.success {
-            animation: success 0.5s ease-in-out;
         }
     </style>
 </head>
 <body>
-    <div class="form-container" id="formContainer">
-        <div class="form-header">
-            <div class="form-icon">📝</div>
-            <h1>Submit Information</h1>
-            <p class="subtitle">Please fill out all required fields to continue</p>
-        </div>
 
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
-        </div>
+    <div class="form-container">
+        <h1>Submit Info</h1>
 
         {% if error %}
-            <div class="error-message">
-                {{ error }}
-            </div>
+          <div class="error-message">{{ error }}</div>
         {% endif %}
 
-        <form method="post" enctype="multipart/form-data" id="submitForm">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            
-            {% for field in form %}
-                <div class="form-group" id="group-{{ field.name }}">
-                    {{ field.label_tag }}
-                    <div class="input-container">
-                        {% if field.field.widget.input_type == 'file' %}
-                            <div class="file-input-wrapper">
-                                {{ field }}
-                                <div class="file-input-display" id="file-display-{{ field.name }}">
-                                    <span class="file-icon">📎</span>
-                                    <div class="file-text">
-                                        <div class="file-placeholder">Click to select a file or drag and drop</div>
-                                    </div>
-                                </div>
-                            </div>
-                        {% else %}
-                            {{ field }}
-                            <span class="validation-icon" id="icon-{{ field.name }}"></span>
-                        {% endif %}
-                    </div>
-                    {% if field.errors %}
-                        <div style="color: #ef4444; font-size: 12px; margin-top: 6px;">
-                            {{ field.errors|striptags }}
-                        </div>
-                    {% endif %}
-                </div>
-            {% endfor %}
-
-            <button type="submit" class="submit-btn" id="submitBtn">
-                Submit Information
-            </button>
+            {{ form.as_p }}
+            <button type="submit">Submit</button>
         </form>
     </div>
 
-    <script>
-        // Progress tracking
-        function updateProgress() {
-            const inputs = document.querySelectorAll('input[required], select[required], textarea[required]');
-            const filledInputs = Array.from(inputs).filter(input => {
-                if (input.type === 'file') {
-                    return input.files.length > 0;
-                }
-                return input.value.trim() !== '';
-            });
-            
-            const progress = (filledInputs.length / inputs.length) * 100;
-            document.getElementById('progressFill').style.width = progress + '%';
-        }
-
-        // Field validation
-        function validateField(field) {
-            const group = document.getElementById(`group-${field.name}`);
-            const icon = document.getElementById(`icon-${field.name}`);
-            
-            if (!group || !icon) return;
-
-            group.classList.remove('valid', 'invalid');
-            
-            if (field.value.trim()) {
-                if (field.type === 'email') {
-                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                    if (emailRegex.test(field.value)) {
-                        group.classList.add('valid');
-                        icon.textContent = '✓';
-                        icon.className = 'validation-icon valid';
-                    } else {
-                        group.classList.add('invalid');
-                        icon.textContent = '✗';
-                        icon.className = 'validation-icon invalid';
-                    }
-                } else {
-                    group.classList.add('valid');
-                    icon.textContent = '✓';
-                    icon.className = 'validation-icon valid';
-                }
-            } else {
-                icon.textContent = '';
-                icon.className = 'validation-icon';
-            }
-        }
-
-        // File input handling
-        function setupFileInput(input) {
-            const display = document.getElementById(`file-display-${input.name}`);
-            
-            input.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                const textDiv = display.querySelector('.file-text');
-                
-                if (file) {
-                    const fileName = file.name;
-                    const fileSize = (file.size / 1024 / 1024).toFixed(2) + ' MB';
-                    
-                    textDiv.innerHTML = `
-                        <div class="file-name">${fileName}</div>
-                        <div class="file-size">${fileSize}</div>
-                    `;
-                    display.classList.add('has-file');
-                    display.querySelector('.file-icon').textContent = '✓';
-                } else {
-                    textDiv.innerHTML = '<div class="file-placeholder">Click to select a file or drag and drop</div>';
-                    display.classList.remove('has-file');
-                    display.querySelector('.file-icon').textContent = '📎';
-                }
-                updateProgress();
-            });
-
-            // Drag and drop functionality
-            display.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                display.style.borderColor = '#667eea';
-                display.style.background = '#f1f5f9';
-            });
-
-            display.addEventListener('dragleave', function(e) {
-                e.preventDefault();
-                display.style.borderColor = '#e2e8f0';
-                display.style.background = '#f8fafc';
-            });
-
-            display.addEventListener('drop', function(e) {
-                e.preventDefault();
-                display.style.borderColor = '#e2e8f0';
-                display.style.background = '#f8fafc';
-                
-                const files = e.dataTransfer.files;
-                if (files.length > 0) {
-                    input.files = files;
-                    input.dispatchEvent(new Event('change'));
-                }
-            });
-        }
-
-        // Initialize form
-        document.addEventListener('DOMContentLoaded', function() {
-            const inputs = document.querySelectorAll('input, select, textarea');
-            
-            inputs.forEach(input => {
-                if (input.type === 'file') {
-                    setupFileInput(input);
-                } else {
-                    input.addEventListener('input', () => {
-                        validateField(input);
-                        updateProgress();
-                    });
-                    
-                    input.addEventListener('blur', () => {
-                        validateField(input);
-                    });
-                }
-            });
-
-            // Form submission
-            document.getElementById('submitForm').addEventListener('submit', function(e) {
-                const btn = document.getElementById('submitBtn');
-                btn.classList.add('loading');
-                btn.textContent = 'Submitting...';
-                btn.disabled = true;
-            });
-
-            // Initialize progress
-            updateProgress();
-        });
-    </script>
 </body>
 </html>

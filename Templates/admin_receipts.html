@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Receipt Verification - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #dc3545 0%, #6f42c1 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .page-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .filters-section {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .filters-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #e1e5e9;
+            background: white;
+            color: #333;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #dc3545 0%, #6f42c1 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        .filter-btn:hover {
+            border-color: #dc3545;
+        }
+
+        .receipts-container {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .receipts-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .receipts-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .receipts-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .receipt-card {
+            border: 1px solid #e1e5e9;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .receipt-card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .receipt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .student-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .student-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .student-details h4 {
+            color: #333;
+            font-size: 1rem;
+            margin-bottom: 2px;
+        }
+
+        .student-details p {
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        .receipt-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+
+        .status-approved {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .status-rejected {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .receipt-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            font-size: 0.9rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .receipt-image {
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .receipt-image img {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .receipt-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #138496;
+            transform: translateY(-1px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #e1e5e9;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .receipt-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .receipt-details {
+                grid-template-columns: 1fr;
+            }
+
+            .receipt-actions {
+                flex-direction: column;
+            }
+
+            .filter-buttons {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                <i class="fas fa-shield-alt"></i>
+                BusTrack Admin
+            </div>
+            <div class="nav-links">
+                <a href="{% url 'admin_dashboard' %}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="{% url 'admin_users' %}"><i class="fas fa-users"></i> Users</a>
+                <a href="{% url 'signout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Receipt Verification</h1>
+            <p class="page-subtitle">Review and verify student payment receipts</p>
+        </div>
+
+        <div class="filters-section">
+            <h3 class="filters-title">Filter by Status</h3>
+            <div class="filter-buttons">
+                <a href="?status=pending" class="filter-btn {% if status_filter == 'pending' %}active{% endif %}">
+                    <i class="fas fa-clock"></i> Pending ({{ receipts|length }})
+                </a>
+                <a href="?status=approved" class="filter-btn {% if status_filter == 'approved' %}active{% endif %}">
+                    <i class="fas fa-check"></i> Approved
+                </a>
+                <a href="?status=rejected" class="filter-btn {% if status_filter == 'rejected' %}active{% endif %}">
+                    <i class="fas fa-times"></i> Rejected
+                </a>
+                <a href="?status=all" class="filter-btn {% if status_filter == 'all' %}active{% endif %}">
+                    <i class="fas fa-list"></i> All
+                </a>
+            </div>
+        </div>
+
+        <div class="receipts-container">
+            <div class="receipts-header">
+                <h3 class="receipts-title">
+                    {% if status_filter == 'pending' %}Pending Receipts
+                    {% elif status_filter == 'approved' %}Approved Receipts
+                    {% elif status_filter == 'rejected' %}Rejected Receipts
+                    {% else %}All Receipts{% endif %}
+                </h3>
+            </div>
+
+            {% if receipts %}
+                <div class="receipts-grid">
+                    {% for receipt in receipts %}
+                        <div class="receipt-card">
+                            <div class="receipt-header">
+                                <div class="student-info">
+                                    <div class="student-avatar">
+                                        {{ receipt.student.first_name.0|default:receipt.student.username.0|upper }}
+                                    </div>
+                                    <div class="student-details">
+                                        <h4>{{ receipt.student.get_full_name|default:receipt.student.username }}</h4>
+                                        <p>{{ receipt.student.email }}</p>
+                                    </div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div class="receipt-amount">${{ receipt.amount }}</div>
+                                    <div class="status-badge status-{{ receipt.status }}">
+                                        {% if receipt.status == 'pending' %}
+                                            <i class="fas fa-clock"></i> Pending
+                                        {% elif receipt.status == 'approved' %}
+                                            <i class="fas fa-check"></i> Approved
+                                        {% else %}
+                                            <i class="fas fa-times"></i> Rejected
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="receipt-details">
+                                <div class="detail-item">
+                                    <div class="detail-label">Payment Date</div>
+                                    <div class="detail-value">{{ receipt.payment_date|date:"M d, Y" }}</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Submitted</div>
+                                    <div class="detail-value">{{ receipt.submitted_at|date:"M d, Y H:i" }}</div>
+                                </div>
+                                {% if receipt.verification_date %}
+                                    <div class="detail-item">
+                                        <div class="detail-label">Verified</div>
+                                        <div class="detail-value">{{ receipt.verification_date|date:"M d, Y H:i" }}</div>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            {% if receipt.description %}
+                                <div class="detail-item">
+                                    <div class="detail-label">Description</div>
+                                    <div class="detail-value">{{ receipt.description }}</div>
+                                </div>
+                            {% endif %}
+
+                            {% if receipt.receipt_image %}
+                                <div class="receipt-image">
+                                    <img src="{{ receipt.receipt_image.url }}" alt="Receipt" onclick="openImageModal('{{ receipt.receipt_image.url }}')">
+                                </div>
+                            {% endif %}
+
+                            <div class="receipt-actions">
+                                {% if receipt.status == 'pending' %}
+                                    <a href="{% url 'verify_receipt' receipt.id %}" class="btn btn-info">
+                                        <i class="fas fa-eye"></i> Review & Verify
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'verify_receipt' receipt.id %}" class="btn btn-info">
+                                        <i class="fas fa-eye"></i> View Details
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-receipt"></i>
+                    <h3>No Receipts Found</h3>
+                    <p>No receipts match the current filter criteria.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function openImageModal(imageUrl) {
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+                cursor: pointer;
+            `;
+
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.style.cssText = `
+                max-width: 90%;
+                max-height: 90%;
+                border-radius: 8px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            `;
+
+            modal.appendChild(img);
+            document.body.appendChild(modal);
+
+            modal.addEventListener('click', function() {
+                document.body.removeChild(modal);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -48,7 +48,8 @@ def submit_info(request):
             if name_input.lower() in extracted_text.lower() and amount_input in extracted_text:
                 person = form.save(commit=False)
                 person.save()  # Save to get the ID
-                person.generate_qr()  # Generate QR with URL to info page
+                full_url = request.build_absolute_uri(f"/barcode/info/{person.pk}/")
+                person.generate_qr(full_url) # Generate QR with URL to info page
                 person.save()  # Save again to store the QR code
                 return redirect('view_info', pk=person.pk)
             else:
@@ -66,3 +67,4 @@ def view_info(request, pk):
 def show_qr(request, pk):
     person = get_object_or_404(Website, pk=pk)
     return render(request, 'qr.html', {'person': person})
+    # Inside submit_info or generate_qr()

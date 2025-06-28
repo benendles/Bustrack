@@ -148,3 +148,4 @@ port = int(os.environ.get("PORT", 8000))
 import os
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "").split(",")
+ALLOWED_HOSTS = ['.onrender.com', 'your-custom-domain.com']
